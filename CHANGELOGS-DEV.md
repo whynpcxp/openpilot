@@ -1,3 +1,8 @@
+dragonpilot 0.8.13-2
+========================
+* ADDED: TORQUE controller. (Toyota only)
+* NOTE: LQR TOGGLE IS NO LOGGER FUNCTIONAL. WILL SOON BE RELPACED WITH TORQUE TOGGLE.
+
 dragonpilot 0.8.13-1
 ========================
 * Based on openpilot 0.8.13 devel.
