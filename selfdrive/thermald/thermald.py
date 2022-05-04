@@ -19,7 +19,7 @@ from common.numpy_fast import interp
 from common.params import Params
 from common.realtime import DT_TRML, sec_since_boot
 from selfdrive.controls.lib.alertmanager import set_offroad_alert
-from selfdrive.controls.lib.pid import PIController
+from selfdrive.controls.lib.pid import PIDController
 from selfdrive.hardware import EON, HARDWARE, PC, TICI, JETSON
 from selfdrive.loggerd.config import get_available_percent
 from selfdrive.statsd import statlog
@@ -177,9 +177,9 @@ def handle_fan_tici(dp_fan_mode, controller, max_cpu_temp, fan_speed, ignition):
   if ignition != last_ignition:
     controller.reset()
 
+  error = 70 - max_cpu_temp
   fan_pwr_out = -int(controller.update(
-                     setpoint=75,
-                     measurement=max_cpu_temp,
+                     error=error,
                      feedforward=interp(max_cpu_temp, [60.0, 100.0], [0, -80])
                   ))
 
@@ -287,7 +287,7 @@ def thermald_thread(end_event, hw_queue):
   thermal_config = HARDWARE.get_thermal_config()
 
   # TODO: use PI controller for UNO
-  controller = PIController(k_p=0, k_i=2e-3, neg_limit=-80, pos_limit=0, rate=(1 / DT_TRML))
+  controller = PIDController(k_p=0, k_i=4e-3, neg_limit=-80, pos_limit=0, rate=(1 / DT_TRML))
 
   # dp
   peripheralStateLast = None

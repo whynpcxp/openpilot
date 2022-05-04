@@ -20,6 +20,7 @@ class CarController():
     self.last_blinker_on = False
     self.blinker_end_frame = 0.
 
+    #self.torque_rate_limits = CarControllerParams(self.CP)
     self.last_steer = 0
     self.alert_active = False
     self.last_standstill = False
