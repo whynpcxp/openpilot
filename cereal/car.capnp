@@ -207,6 +207,7 @@ struct CarState {
   engineRPM @40 :Float32;
   cruiseActualEnabled @41 :Bool;
   distanceLines @42 :UInt8;
+  leadDistance @43 :Float32; # lead distance from radar
 
   struct WheelSpeeds {
     # optional wheel speeds

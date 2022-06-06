@@ -41,6 +41,7 @@ class CarInterfaceBase(ABC):
       self.cp_cam = self.CS.get_cam_can_parser(CP)
       self.cp_body = self.CS.get_body_can_parser(CP)
       self.cp_loopback = self.CS.get_loopback_can_parser(CP)
+      self.cp_radar = self.CS.get_radar_can_parser(CP)
 
     self.CC = None
     if CarController is not None:
@@ -283,4 +284,8 @@ class CarStateBase(ABC):
 
   @staticmethod
   def get_loopback_can_parser(CP):
+    return None
+
+  @staticmethod
+  def get_radar_can_parser(CP):
     return None

@@ -6,7 +6,7 @@ from opendbc.can.can_define import CANDefine
 from selfdrive.car.interfaces import CarStateBase
 from opendbc.can.parser import CANParser
 from selfdrive.config import Conversions as CV
-from selfdrive.car.toyota.values import ToyotaFlags, CAR, DBC, STEER_THRESHOLD, NO_STOP_TIMER_CAR, TSS2_CAR, EPS_SCALE
+from selfdrive.car.toyota.values import ToyotaFlags, CAR, DBC, STEER_THRESHOLD, NO_STOP_TIMER_CAR, TSS2_CAR, EPS_SCALE, NO_DSU_CAR
 from common.params import Params, put_nonblocking
 import time
 from math import floor
@@ -58,7 +58,7 @@ class CarState(CarStateBase):
     self.dp_toyota_ap_btn_link = Params().get_bool('dp_toyota_ap_btn_link')
     #self.dp_toyota_lkas_btn_link = Params().get_bool('dp_toyota_lkas_btn_link')
 
-  def update(self, cp, cp_cam):
+  def update(self, cp, cp_cam, cp_radar):
     ret = car.CarState.new_message()
 
     ret.doorOpen = any([cp.vl["BODY_CONTROL_STATE"]["DOOR_OPEN_FL"], cp.vl["BODY_CONTROL_STATE"]["DOOR_OPEN_FR"],
@@ -204,6 +204,9 @@ class CarState(CarStateBase):
     ret.espDisabled = cp.vl["ESP_CONTROL"]["TC_DISABLED"] != 0
     # 2 is standby, 10 is active. TODO: check that everything else is really a faulty state
     #self.steer_state = cp.vl["EPS_STATUS"]["LKA_STATE"]
+
+    if self.CP.carFingerprint in NO_DSU_CAR:
+      ret.leadDistance = cp_radar.vl["RADAR"]["LEAD_DISTANCE"]
 
     if self.CP.enableBsm:
       ret.leftBlindspot = (cp.vl["BSM"]["L_ADJACENT"] == 1) or (cp.vl["BSM"]["L_APPROACHING"] == 1)
@@ -453,3 +456,12 @@ class CarState(CarStateBase):
       checks.append(("ACC_CONTROL", 33))
 
     return CANParser(DBC[CP.carFingerprint]["pt"], signals, checks, 2)
+
+  @staticmethod
+  def get_radar_can_parser(CP):
+    signals = []
+    checks = []
+    if CP.carFingerprint in NO_DSU_CAR:
+      signals.append("LEAD_DISTANCE", "RADAR")
+
+    return CANParser(DBC[CP.carFingerprint]["pt"], signals, checks, 1)

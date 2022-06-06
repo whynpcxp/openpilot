@@ -176,6 +176,15 @@ class RadarD():
       if len(leads_v3) > 1:
         radarState.leadOne = get_lead(self.v_ego, self.ready, clusters, leads_v3[0], low_speed_override=True)
         radarState.leadTwo = get_lead(self.v_ego, self.ready, clusters, leads_v3[1], low_speed_override=False)
+        if sm['carState'].leadDistance > 1.:
+          if radarState.leadOne.status and radarState.leadOne.modelProb > 0.9:
+            if abs(radarState.leadOne.dRel - sm['carState'].leadDistance) <= 4:
+              radarState.leadOne.dRel = sm['carState'].leadDistance
+            # if radarState.leadOne.dRel - sm['carState'].leadDistance <= 8.:
+            #   radarState.leadOne.dRel = sm['carState'].leadDistance - 3
+          # if radarState.leadTwo.status:
+          #   if radarState.leadTwo.dRel - sm['carState'].leadDistance <= 8.:
+          #     radarState.leadTwo.dRel = sm['carState'].leadDistance - 3
     return dat
 
 
