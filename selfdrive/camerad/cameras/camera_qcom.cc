@@ -1322,7 +1322,7 @@ static void driver_camera_start(CameraState *s) {
   set_exposure(s, 1.0, 1.0);
   // 20240201
   // int err = sensor_write_regs(s, start_reg_array, std::size(start_reg_array), MSM_CAMERA_I2C_BYTE_DATA);
-  LOG("sensor start regs: %d", err);
+  // LOG("sensor start regs: %d", err);
 }
 
 void cameras_open(MultiCameraState *s) {
