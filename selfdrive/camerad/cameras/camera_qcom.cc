@@ -1320,7 +1320,8 @@ void camera_autoexposure(CameraState *s, float grey_frac) {
 
 static void driver_camera_start(CameraState *s) {
   set_exposure(s, 1.0, 1.0);
-  int err = sensor_write_regs(s, start_reg_array, std::size(start_reg_array), MSM_CAMERA_I2C_BYTE_DATA);
+  // 20240201
+  // int err = sensor_write_regs(s, start_reg_array, std::size(start_reg_array), MSM_CAMERA_I2C_BYTE_DATA);
   LOG("sensor start regs: %d", err);
 }
 
@@ -1362,7 +1363,8 @@ void cameras_open(MultiCameraState *s) {
 
   LOG("*** open driver camera ***");
   s->driver_cam.ss[0].bufs = s->driver_cam.buf.camera_bufs.get();
-  camera_open(&s->driver_cam, false);
+  // 20240201
+  // camera_open(&s->driver_cam, false);
 
   LOG("*** open road camera ***");
   s->road_cam.ss[0].bufs = s->road_cam.buf.camera_bufs.get();
@@ -1537,7 +1539,8 @@ void cameras_run(MultiCameraState *s) {
   std::vector<std::thread> threads;
   threads.push_back(std::thread(ops_thread, s));
   threads.push_back(start_process_thread(s, &s->road_cam, process_road_camera));
-  threads.push_back(start_process_thread(s, &s->driver_cam, common_process_driver_camera));
+  // 20240201
+  // threads.push_back(start_process_thread(s, &s->driver_cam, common_process_driver_camera));
 
   CameraState* cameras[2] = {&s->road_cam, &s->driver_cam};
 
@@ -1552,7 +1555,9 @@ void cameras_run(MultiCameraState *s) {
     }
 
     // process cameras
-    for (int i=0; i<2; i++) {
+    // 20240201
+    for (int i=0; i<1; i++) {
+    // for (int i=0; i<2; i++) {
       if (!fds[i].revents) continue;
 
       CameraState *c = cameras[i];
